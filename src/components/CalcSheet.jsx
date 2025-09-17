@@ -1,22 +1,9 @@
 import React, { useState } from "react";
+import  MaterialsData from "./MaterialsData";
 
 //Material List
 export const CalcSheet = () => {
-  const [data, setData] = useState([
-    { id: 1, material: "Arrowhead of Desire", value: 160, amount: 0 },
-    { id: 2, material: "Empress's Mask", value: 3000, amount: 0 },
-    { id: 3, material: "Hellish Bowtie", value: 150, amount: 0 },
-    { id: 4, material: "Hushing Tiara", value: 130, amount: 0 },
-    { id: 5, material: "Mask of Cruelty", value: 120, amount: 0 },
-    { id: 6, material: "Shackles of Ecstasy", value: 200, amount: 0 },
-    { id: 7, material: "Thebel Crystal", value: 1000, amount: 0 },
-    { id: 8, material: "Thebel Glass Shard", value: 70, amount: 0 },
-    { id: 9, material: "Thebel Iron Fence", value: 105, amount: 0 },
-    { id: 10, material: "Thebel Lantern", value: 140, amount: 0 },
-    { id: 11, material: "Thebel Stone Piece", value: 80, amount: 0 },
-    { id: 12, material: "Vanguard's Horn", value: 220, amount: 0 },
-    { id: 13, material: "Wealth Coin", value: 3000, amount: 0 },
-  ]);
+  const [data, setData] = useState(MaterialsData.map((material) => ({...material, amount: ""})));
 
   //Change amount of material
   const handleAmountChange = (id, newAmount) => {
@@ -29,7 +16,8 @@ export const CalcSheet = () => {
 
   //Value of the amount of a certain material
   const calculateSubtotal = (value, amount) => {
-    return value * amount;
+    const materialAmount = parseFloat(amount);
+    return value * (isNaN(materialAmount) ? 0 : materialAmount);
   };
 
   //Total value of all materials
@@ -58,19 +46,17 @@ export const CalcSheet = () => {
               <td style={{border: '1px solid'}}>
                 <input //Changes in the amount of material
                   type="number"
-                  min={0}
-                  step={1}
                   value={material.amount}
                   onChange={(e) =>
                     handleAmountChange(
                       material.id,
-                      parseInt(e.target.value) || 0
-                    )
+                      e.target.value)
                   }
+                  min={0}
                   style={{ width: "80px" }}
                 />
               </td>
-              <td style={{border: '1px solid'}}>{calculateSubtotal(material.value, material.amount)}</td>
+              <td style={{border: '1px solid'}}>¥{calculateSubtotal(material.value, material.amount)}</td>
             </tr>
           ))}
         </tbody>
@@ -79,7 +65,7 @@ export const CalcSheet = () => {
             <td colSpan={3} style={{ textAlign: "right", fontWeight: "bold" }}>
               Total:
             </td>
-            <td style={{ fontWeight: "bold" }}>{total}</td>
+            <td style={{ fontWeight: "bold" }}>¥{total}</td>
           </tr>
         </tfoot>
       </table>

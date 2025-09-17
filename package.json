@@ -2,7 +2,7 @@
   "name": "persona-3-reload-material-calculator",
   "private": true,
   "author": "Kevin Casas",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
