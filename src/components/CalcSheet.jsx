@@ -12,25 +12,25 @@ export const CalcSheet = () => {
   const [hasLoaded, setHasLoaded] = useState(false); //Previene escritura
 
   useEffect(() => {
-  let storedAmounts = {};
-  try {
-    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (stored) {
-      storedAmounts = JSON.parse(stored);
+    let storedAmounts = {};
+    try {
+      const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (stored) {
+        storedAmounts = JSON.parse(stored);
+      }
+    } catch (error) {
+      console.warn("Failed to parse localStorage data:", error);
+      localStorage.removeItem(LOCAL_STORAGE_KEY); // prevent recurring issues
     }
-  } catch (error) {
-    console.warn("Failed to parse localStorage data:", error);
-    localStorage.removeItem(LOCAL_STORAGE_KEY); // prevent recurring issues
-  }
 
-  const initialData = MaterialsData.map((material) => ({
-    ...material,
-    amount: storedAmounts[material.id] ?? "",
-  }));
+    const initialData = MaterialsData.map((material) => ({
+      ...material,
+      amount: storedAmounts[material.id] ?? "",
+    }));
 
-  setData(initialData);
-  setHasLoaded(true);
-}, []);
+    setData(initialData);
+    setHasLoaded(true);
+  }, []);
 
   useEffect(() => {
     if (!hasLoaded) return;
@@ -42,7 +42,6 @@ export const CalcSheet = () => {
 
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(amountsToSave));
   }, [data, hasLoaded]);
-
 
   //Change amount of material
   const handleAmountChange = (id, newAmount) => {
@@ -80,8 +79,12 @@ export const CalcSheet = () => {
         <tbody>
           {data.map((material) => (
             <tr key={material.id}>
-              <td style={{ border: "1px solid" }}>{material.material}</td>
-              <td style={{ border: "1px solid" }}>{material.value}</td>
+              <td style={{ border: "1px solid", margin: "3px" }}>
+                {material.material}
+              </td>
+              <td style={{ border: "1px solid", margin: "3px" }}>
+                {material.value}
+              </td>
               <td style={{ border: "1px solid" }}>
                 <input //Changes in the amount of material
                   type="number"
@@ -90,7 +93,7 @@ export const CalcSheet = () => {
                     handleAmountChange(material.id, e.target.value)
                   }
                   min={0}
-                  style={{ width: "80px" }}
+                  style={{ width: "80px", margin: "3px" }}
                 />
               </td>
               <td style={{ border: "1px solid" }}>
@@ -108,6 +111,23 @@ export const CalcSheet = () => {
           </tr>
         </tfoot>
       </table>
+
+      <div  style={{ marginTop: "20px", textAlign: "right" }}>
+        <button //Clear amounts button
+          onClick={() => {
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
+            setData(
+              MaterialsData.map((material) => ({
+                ...material,
+                amount: "",
+              }))
+            );
+          }}
+          style={{ background: "#242424", border: "1px solid" }}
+        >
+          Clear All
+        </button>
+      </div>
     </div>
   );
 };
